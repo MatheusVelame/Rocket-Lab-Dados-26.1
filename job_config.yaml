@@ -1,0 +1,38 @@
+resources:
+  jobs:
+    E_Commerce_Medallion_Pipeline:
+      name: E-Commerce_Medallion_Pipeline
+      email_notifications:
+        on_start:
+          - matheusvelamett@gmail.com
+        on_success:
+          - matheusvelamett@gmail.com
+        on_failure:
+          - matheusvelamett@gmail.com
+      schedule:
+        quartz_cron_expression: 0 0 13 * * ?
+        timezone_id: America/Sao_Paulo
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: Task_Bronze
+          notebook_task:
+            notebook_path: /Workspace/Users/matheusvelamett@gmail.com/Atividade_Rocket_Lab/Atividade_land_to_bronze
+            base_parameters:
+              data_inicio: 09-04-2016
+              data_fim: 10-17-2018
+            source: WORKSPACE
+        - task_key: Task_Silver
+          depends_on:
+            - task_key: Task_Bronze
+          notebook_task:
+            notebook_path: /Workspace/Users/matheusvelamett@gmail.com/Atividade_Rocket_Lab/Atividade_bronze_to_silver
+            source: WORKSPACE
+        - task_key: Task_Gold
+          depends_on:
+            - task_key: Task_Silver
+          notebook_task:
+            notebook_path: /Workspace/Users/matheusvelamett@gmail.com/Atividade_Rocket_Lab/Atividade_silver_to_gold
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
